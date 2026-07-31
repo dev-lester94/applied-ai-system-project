@@ -18,6 +18,7 @@ class Song:
     valence: float
     danceability: float
     acousticness: float
+    description: Optional[str] = None
 
 @dataclass
 class UserProfile:
@@ -73,6 +74,7 @@ def load_songs(csv_path: str) -> List[Dict]:
                 "valence": float(row["valence"]),
                 "danceability": float(row["danceability"]),
                 "acousticness": float(row["acousticness"]),
+                "description": row.get("description") or None,
             })
     return songs
 
