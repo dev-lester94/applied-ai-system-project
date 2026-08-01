@@ -73,6 +73,39 @@ def test_build_descriptions_regenerates_when_forced(tmp_path):
     assert rows[0]["description"] == "A fake generated description."
 
 
+def test_build_descriptions_regenerates_all_when_partially_filled(tmp_path):
+    csv_path = tmp_path / "songs.csv"
+    with open(csv_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=SONG_FIELDS + ["description"])
+        writer.writeheader()
+        writer.writerow({
+            "id": "1", "title": "Has Description", "artist": "Artist A",
+            "genre": "pop", "mood": "happy", "energy": "0.8",
+            "tempo_bpm": "120", "valence": "0.7", "danceability": "0.8",
+            "acousticness": "0.2", "description": "An existing description that should be overwritten.",
+        })
+        writer.writerow({
+            "id": "2", "title": "Missing Description", "artist": "Artist B",
+            "genre": "rock", "mood": "intense", "energy": "0.9",
+            "tempo_bpm": "150", "valence": "0.4", "danceability": "0.5",
+            "acousticness": "0.1",
+        })
+
+    descriptions = build_descriptions(str(csv_path), FakeGeminiClient(), force=True)
+
+    # Not every row already had a description, so the whole file gets regenerated --
+    # including the row that already had one, not just the empty one.
+    assert descriptions == {
+        1: "A fake generated description.",
+        2: "A fake generated description.",
+    }
+
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    assert rows[0]["description"] == "A fake generated description."
+    assert rows[1]["description"] == "A fake generated description."
+
+
 def test_build_vector_store_generates_when_cache_missing(tmp_path):
     songs = [{
         "id": 1, "title": "Test Song", "artist": "Test Artist",
@@ -145,3 +178,30 @@ def test_semantic_recommend_returns_closest_match():
     second_song, second_score, _ = results[1]
     assert second_song["id"] == 2
     assert second_score == pytest.approx(0.0)
+
+
+def test_semantic_recommend_with_k_larger_than_available_songs():
+    songs = [
+        {
+            "id": 1, "title": "Song One", "artist": "Artist A",
+            "genre": "pop", "mood": "happy", "energy": 0.8,
+            "tempo_bpm": 120, "valence": 0.7, "danceability": 0.8,
+            "acousticness": 0.2, "description": "A fake generated description.",
+        },
+        {
+            "id": 2, "title": "Song Two", "artist": "Artist B",
+            "genre": "rock", "mood": "intense", "energy": 0.9,
+            "tempo_bpm": 150, "valence": 0.4, "danceability": 0.5,
+            "acousticness": 0.1, "description": "A fake generated description.",
+        },
+    ]
+
+    store = VectorStore()
+    store.add(1, [1.0, 0.0, 0.0])
+    store.add(2, [0.0, 1.0, 0.0])
+
+    results = list(semantic_recommend("upbeat happy pop song", songs, store, FakeQueryClient(), k=5))
+
+    # Only 2 songs exist even though k=5 was requested -- no error, no padding.
+    assert len(results) == 2
+    assert {song["id"] for song, _, _ in results} == {1, 2}
