@@ -2,10 +2,49 @@
 
 import csv
 import os
-from typing import Dict, Iterator, List, Tuple
+from dataclasses import dataclass
+from typing import Dict, Iterator, List, Optional, Tuple
 
 from gemini_client import GeminiClient
 from vector_store import VectorStore
+
+
+@dataclass
+class Song:
+    """Represents a song and its attributes."""
+    id: int
+    title: str
+    artist: str
+    genre: str
+    mood: str
+    energy: float
+    tempo_bpm: float
+    valence: float
+    danceability: float
+    acousticness: float
+    description: Optional[str] = None
+
+
+def load_songs(csv_path: str) -> List[Dict]:
+    """Loads songs from a CSV file."""
+    songs = []
+    with open(csv_path, newline="", encoding="utf-8") as csv_file:
+        reader = csv.DictReader(csv_file)
+        for row in reader:
+            songs.append({
+                "id": int(row["id"]),
+                "title": row["title"],
+                "artist": row["artist"],
+                "genre": row["genre"],
+                "mood": row["mood"],
+                "energy": float(row["energy"]),
+                "tempo_bpm": float(row["tempo_bpm"]),
+                "valence": float(row["valence"]),
+                "danceability": float(row["danceability"]),
+                "acousticness": float(row["acousticness"]),
+                "description": row.get("description") or None,
+            })
+    return songs
 
 
 def describe_song(song: Dict, client: GeminiClient) -> str:

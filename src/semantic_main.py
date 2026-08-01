@@ -3,10 +3,9 @@
 from pathlib import Path
 
 from gemini_client import GeminiClient
-from recommender import load_songs
-from semantic_search import build_descriptions, build_vector_store, semantic_recommend
+from semantic_search import build_descriptions, build_vector_store, load_songs, semantic_recommend
 
-SONGS_CSV = Path(__file__).resolve().parent.parent / "data" / "songsV2.csv"
+SONGS_CSV = Path(__file__).resolve().parent.parent / "data" / "songs.csv"
 EMBEDDINGS_CACHE = Path(__file__).resolve().parent.parent / "data" / "song_embeddings.json"
 
 

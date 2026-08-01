@@ -1,34 +1,29 @@
-# Recommender Data Flow
+# Semantic Song Search Data Flow
 
-Input (User Prefs) → Process (score every song) → Output (ranked Top K).
+Build phase (once, cached) → Query phase (every search).
 
 ```mermaid
 flowchart TD
-    subgraph INPUT["Input"]
-        CSV[("data/songs.csv")]
-        PREFS["User Prefs<br/>favorite_genre, favorite_mood,<br/>target_energy, likes_acoustic"]
-    end
-
-    CSV --> LOAD["load_songs()"]
-    LOAD --> SONGS["Songs list"]
-
-    subgraph PROCESS["Process: score_song() runs for every song"]
+    subgraph BUILD["Build phase: cached to disk"]
         direction TB
-        G1["Genre match?<br/>+35 : +0"]
-        G2["Mood match?<br/>+25 : +0"]
-        G3["Energy distance banded<br/>up to +20"]
-        G4["Acoustic formula<br/>up to +20"]
-        G1 & G2 & G3 & G4 --> SUM["Total score + reasons"]
+        CSV[("data/songs.csv")]
+        CSV --> LOAD["load_songs()"]
+        LOAD --> SONGS["Songs list"]
+        SONGS --> DESC["Gemini: describe_song()<br/>one short description per song"]
+        DESC --> DESCCACHE[("data/song_descriptions.json")]
+        DESCCACHE --> EMBED["Gemini: embed_text()<br/>task_type=RETRIEVAL_DOCUMENT<br/>description + genre/mood/energy/etc."]
+        EMBED --> STORE["VectorStore"]
+        STORE --> EMBEDCACHE[("data/song_embeddings.json")]
     end
 
-    SONGS --> PROCESS
-    PREFS --> PROCESS
-
-    subgraph OUTPUT["Output"]
-        SORT["recommend_songs():<br/>sort all songs descending by score"]
-        TOPK["Take top K"]
-        SORT --> TOPK
+    subgraph QUERY["Query phase: every user search"]
+        direction TB
+        Q["User query"]
+        Q --> QEMBED["Gemini: embed_text()<br/>task_type=RETRIEVAL_QUERY"]
+        QEMBED --> SEARCH["VectorStore.search()<br/>cosine similarity, top 5"]
+        SEARCH --> EXPLAIN["Gemini: explain_match()<br/>per matched song"]
+        EXPLAIN --> OUT["Console output:<br/>query, top 5 songs, explanations"]
     end
 
-    SUM --> OUTPUT
+    EMBEDCACHE --> SEARCH
 ```
