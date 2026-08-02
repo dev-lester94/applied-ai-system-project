@@ -54,6 +54,78 @@ python -m \src\semantic_main.py
 Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
 
 ```
+Loading song descriptions (generating any that are missing)...
+Loading song embeddings from cache...
+  Loaded 20 cached embeddings from C:\Users\Lester\Documents\codepath\finalproject\applied-ai-system-final\data\song_embeddings.json
+
+Ready. Describe the kind of songs you're looking for.
+
+Enter a query (or 'quit' to exit): I want to listen to a electric pop song that is intense and danceable too
+
+Query: I want to listen to a electric pop song that is intense and danceable too
+
+1. Gym Hero by Max Pulse - similarity: 0.80
+   Because: "Gym Hero" is a high-octane electronic pop track with a driving beat and the intense, danceable energy the user is looking for.
+2. Sunrise City by Neon Echo - similarity: 0.74
+   Because: "Sunrise City" fits because it is a synth-heavy pop track with a danceable rhythm and vibrant, high energy.
+3. Storm Runner by Voltline - similarity: 0.74
+   Because: This song matches the request with its thunderous electric intensity and a high-octane pace perfect for dancing.
+4. Rooftop Lights by Indigo Parade - similarity: 0.72
+   Because: This high-energy pop anthem matches your request with its intense energy and danceable groove.
+5. Night Drive Loop by Neon Echo - similarity: 0.69
+   Because: Its pulsing synthwave sound and steady electronic beat provide the intensity and danceability the user is looking for.
+
+Enter a query (or 'quit' to exit): 
+
+```
+
+```
+Loading song descriptions (generating any that are missing)...
+Loading song embeddings from cache...
+  Loaded 20 cached embeddings from C:\Users\Lester\Documents\codepath\finalproject\applied-ai-system-final\data\song_embeddings.json
+
+Ready. Describe the kind of songs you're looking for.
+
+Enter a query (or 'quit' to exit): A sun-drenched, high-energy indie pop anthem with a danceable groove and a joyful spirit.
+
+Query: A sun-drenched, high-energy indie pop anthem with a danceable groove and a joyful spirit.
+
+1. Rooftop Lights by Indigo Parade - similarity: 0.87
+   Because: The song is a perfect match because its description is identical to the user's search criteria.
+2. Sunlit Porch by Amber Wilde - similarity: 0.77
+   Because: The song matches the user's request for a sunny, joyful mood and a danceable rhythm.
+3. Copper Skies by Harlow Fields - similarity: 0.77
+   Because: The song aligns with the user's request by offering a sun-drenched, upbeat energy and a danceable groove.
+4. Sunrise City by Neon Echo - similarity: 0.77
+   Because: This song fits the search because its vibrant, synth-heavy pop sound and danceable rhythm perfectly mirror the requested high energy and joyful spirit.
+5. Honeyed Strings by Delta Fawn - similarity: 0.77
+   Because: The song perfectly matches the request's "sun-drenched" atmosphere, "danceable groove," and "joyful spirit."
+
+```
+
+```
+Loading song descriptions (generating any that are missing)...
+Loading song embeddings from cache...
+  Loaded 20 cached embeddings from C:\Users\Lester\Documents\codepath\finalproject\applied-ai-system-final\data\song_embeddings.json
+
+Ready. Describe the kind of songs you're looking for.
+
+Enter a query (or 'quit' to exit): Can you help with filing taxes?
+
+Query: Can you help with filing taxes?
+
+1. Library Rain by Paper Lanterns - similarity: 0.55
+   Because: This calming lofi track provides a serene backdrop to help reduce stress and maintain focus while filing taxes.
+2. Focus Flow by LoRoom - similarity: 0.55
+   Because: This calming track provides the deep concentration needed to tackle the stressful task of filing taxes.
+3. Coffee Shop Stories by Slow Stereo - similarity: 0.55
+   Because: This calming jazz track provides a relaxing background to help reduce stress while focusing on the tedious task of filing taxes.
+4. Midnight Coding by LoRoom - similarity: 0.55
+   Because: This track provides the calming, deep-focus atmosphere ideal for concentrating on the detailed work of filing taxes.
+5. Sunlit Porch by Amber Wilde - similarity: 0.54
+   Because: This upbeat, sunny track provides a relaxing and joyful atmosphere to help ease the stress of filing taxes.
+
+Enter a query (or 'quit' to exit): 
 
 ```
 
