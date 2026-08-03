@@ -2,7 +2,7 @@
 
 ## 1. Model Name  
 
-Les Find Music Finder 1.0
+Les Find Music Finder 2.0
 
 ---
 
@@ -10,24 +10,18 @@ Les Find Music Finder 1.0
 
 Describe what your recommender is designed to do and who it is for. 
 
-It recommends songs based off exact genre and mood, and also energy level and acoustiness of user's preferences.
-It assumes that the user has already set their preference upon rumnning the app.
-This is not design for real users. It is more for classroom exploration.
+It recommends songs from a database off a user's query semantically. This is not design for real users. It is more for classroom exploration.
 
 ---
 
 ## 3. How the Model Works  
 
-Explain your scoring approach in simple language.  
+Explain your scoring approach in simple language. 
 
-The features we use for the songs are genre, mood, energy, and accoustiness. 
-The features we use for user preferences are liked_genre, liked_mood, energy level, and liked_accoustiness. 
-For scoring, we score a song out of 100 points with 4 criterias. 
-  It compares the exact match of the users liked_genre to the songs genre.
-  It compares the exact match of the users liked_mood to the songs mood
-  It compares the energy of the song to the users energy level by taking the absolute difference of the two. The smallest difference of <= 0.1 gives the maximum points.
-  It compares the accoustiness of a song to the users liked_accoustiness. Depending on the users liked_accoustiness boolean value we calculate the score differently.
-After scoring, we get the top 5 songs with the highest score and present them in decending order
+Each song has a description
+A user queries for a song
+The system compares the song and query semantically using a mathematically approach and computes a similarity score
+Top 5 songs with scores closest to 1 are recommended
 
 ---
 
@@ -35,10 +29,10 @@ After scoring, we get the top 5 songs with the highest score and present them in
 
 Describe the dataset the model uses.  
 
-There are a little over 20 songs in the catalog.
-Genres included are rock, pop, folk pop, and etc
-I did not remove any of the the orginal songs given but added > 10 more songs later.
-I would say their are genres like classical that are missing in the data
+There are about 20 songs in the catalog.
+Each song has a description
+I did not remove any of the the original songs from my version of the app.
+I would say their are songs in the classical genre that are missing in the data.
 
 ---
 
@@ -46,11 +40,7 @@ I would say their are genres like classical that are missing in the data
 
 Where does your system seem to work well  
 
-In my default scoring mechanism, matching genre makes a big impact of whether a song is recommended. 
-So a user type where genre match and close energy and accuostiness but not mood can give a reasonable result.
-Inversely, if song genre does not match it will score low and not get recommended
-I knew genre would make a huge impact in getting songs recommended. But I was really surprise it beated songs by a landslide.
-
+The system works well when the query semantically matches with the descriptions of the songs and when the query is indeed about music. The system is able to compute and recommend top 5 songs, no issues. 
 
 ---
 
@@ -58,12 +48,7 @@ I knew genre would make a huge impact in getting songs recommended. But I was re
 
 Where the system struggles or behaves unfairly. 
 
-Assuming the test was done with my default scoring mechanism,
-Genre again is very impactful.
-Between genre and mood, mood is definitely underrepresented.
-A perfect score in energy can still be beaten by a song who genre match but the energy does not match.
-If the genre matches and there is one song for that genre then that song will get recommended always.
-
+The system does its best to recommended songs where the query isn't about music i.e. Can you help with filing taxes?. The system does compute a score where it is dissimilar and explains why the song was still recommended. I give a thumbs up for that. But logically, we should check query if it is about music and if it does not we can output I don't know.
 
 ---
 
@@ -78,13 +63,11 @@ Prompts:
 - What surprised you  
 - Any simple tests or comparisons you ran  
 
-Tested profile with default scoring mechanism:
- Genre-vs-mood conflict
-     Genre therotically and with real results beats mood. The theroically ceiling for genre vs mood (85 vs 75). And the real results were 81.40 vs 73.00.
-  Near-miss compound genre user_prefs
-    Song that have matching everything except energy or accoustiness gets beaten by songs that have matching genre/mood
-  Self-contradictory taste user_prefs 
-    Genre was so strong that song with same genre but contradictory accoustiness was able to score high and be recommenended.
+Tested a query about music: I want to listen to a electric pop song that is intense and danceable too. I saw the the cosine similarity for the top song was 0.80. I was surprised. I thought it would be higher. This lead me to test the second scenario.
+
+The second scenario I tested was to make the query as the same as the song's description. The top song recommended had a cosine similarity of 0.86. I was very surprised again. I thought it would be exactly one.  After some evaluation, their were some differences in the way that we embed the description and the query. 
+
+The third scenario I tested was to make a query Can you help with filing taxes?. Again it does try to recommend songs and justify an explanation on why a song was recommended this way. But logically, we should again check query if it is about music and if it does not we can output I don't know.
 
 
 ---
@@ -94,7 +77,7 @@ Tested profile with default scoring mechanism:
 Ideas for how you would improve the model next.   
 
 Ideas for Improvement
-- Support similar genres instead of only exact genre matches.
+- Using a combination of content based criteria with semantics to recommend songs 
 - Learn from user feedback to improve future recommendations.
 - Use a larger and more diverse music dataset.
 ---
@@ -104,7 +87,7 @@ Ideas for Improvement
 A few sentences about your experience.  
 
   This was an awesome classroom project.
-  I never build a recomender system before.
-  It was cool planning and implementing a way to score songs and then recommend them.
+  I was able to design a different type of recommender.
+  It was cool using the Gemini API for generation and embedding. 
   It allowed me to become a better engineer where I was more of a senior rather than a junior one.
   After working on this, I feel if making a real one for the users then we need to do a bit more research and planning to how to score the songs.
